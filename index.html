@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+<style>
+  :root {
+    --primary: navy;
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #555;
+    --button-bg: #e5e5e5;
+    --button-hover: #d2d2d2;
+    --border: #e8e8e8;
+    --placeholder: #f3f3f3;
+    --video-width: 720px;
+    --video-bg: #000;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+  font-family: "Source Serif 4", Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+  /* ---------- Header ---------- */
+  header {
+    text-align: center;
+    padding: 90px 30px 30px;
+  }
+
+  h1 {
+    font-family: "Source Serif 4", Georgia, 'Times New Roman', serif;
+    color: var(--primary);
+    font-size: clamp(2rem, 4.8vw, 3.4rem);
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 1.7rem;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    color: var(--muted);
+    max-width: none;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  /* ---------- Container ---------- */
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 30px 60px;
+  }
+
+  /* ---------- Section headings ---------- */
+  h2 {
+    color: var(--text);
+    font-size: 2rem;
+    font-weight: normal;
+    margin: 70px 0 35px;  /* top | left/right | bottom */
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: normal;
+    margin: 100px 0 20px;
+  }
+
+  h4 {
+    color: var(--text);
+    font-size: 1.15rem;
+    font-weight: normal;
+    margin: 28px 0 10px;
+    letter-spacing: 0.5px;
+  }
+
+  p {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 14px;
+    max-width: 200ch;
+  }
+
+  /* ---------- Gallery / carousel ---------- */
+  .gallery {
+    position: relative;
+    margin: 18px auto 40px;
+    padding: 0 60px;
+    max-width: calc(var(--video-width) + 120px);
+  }
+
+  .gallery-viewport {
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--video-bg);
+    aspect-ratio: var(--gallery-aspect, 16 / 9);
+  }
+
+  .gallery-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .gallery-slide {
+    min-width: 100%;
+    flex-shrink: 0;
+    height: 100%;
+    position: relative;
+  }
+
+  .gallery-slide video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    background: var(--video-bg);
+  }
+
+  /* small badge in the corner of each slide identifying it */
+  .slide-label {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--text);
+    padding: 5px 14px;
+    border-radius: 3px;
+    font-size: 1rem;
+    font-weight: 600;
+    z-index: 1;
+    font-family: Georgia, 'Times New Roman', serif;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  /* "Big" carousel variant — fills the content column */
+  .gallery.big-gallery {
+    max-width: 100%;
+  }
+
+  /* round light-grey nav buttons */
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--button-bg);
+    border: none;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    font-size: 1.5rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 2;
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  .nav-btn:hover {
+    background: var(--button-hover);
+    transform: translateY(-50%) scale(1.06);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-btn:active {
+    transform: translateY(-50%) scale(0.98);
+  }
+
+  .nav-btn.prev { left: 8px; }
+  .nav-btn.next { right: 8px; }
+
+  /* dots */
+  .gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d0d0d0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .dot:hover { transform: scale(1.2); }
+  .dot.active { background: var(--text); }
+
+  /* ---------- Single-video block (MIS section) ---------- */
+  .single-video-block {
+    margin: 18px auto 36px;
+    max-width: var(--video-width);
+  }
+
+  .single-video-block video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border-radius: 4px;
+    background: var(--video-bg);
+    object-fit: contain;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    padding: 40px 30px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 700px) {
+    header { padding: 60px 20px 20px; }
+    .gallery { padding: 0 48px; }
+    .nav-btn {
+      width: 38px;
+      height: 38px;
+      font-size: 1.15rem;
+    }
+    .nav-btn.prev { left: 2px; }
+    .nav-btn.next { right: 2px; }
+    h2 { font-size: 1.6rem; }
+    h3 { font-size: 1.25rem; }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Video Stitching from Multiple Moving Cameras</h1>
+  <p class="subtitle">Anonymous Author(s)</p>
+</header>
+
+<div class="container">
+
+  <h2>Visual Comparisons</h2>
+
+
+  <h4>\(N = 3\)</h4>
+  
+  <div class="gallery" data-gallery style="--gallery-aspect: 1680 / 720; max-width: 1080px;">
+    <button class="nav-btn prev" aria-label="Previous">&#x2039;</button>
+    <div class="gallery-viewport">
+      <div class="gallery-track">
+        <div class="gallery-slide"><video src="videos/2_stabstitch++_vs_mvis.mp4" autoplay loop muted playsinline></video></div>
+        <div class="gallery-slide"><video src="videos/3_stabstitch++_vs_mvis.mp4" autoplay loop muted playsinline></video></div>
+        <div class="gallery-slide"><video src="videos/4_stabstitch++_vs_mvis.mp4" autoplay loop muted playsinline></video></div>
+      </div>
+    </div>
+    <button class="nav-btn next" aria-label="Next">&#x203A;</button>
+    <div class="gallery-dots"></div>
+  </div>
+  <p>Among existing video stitching methods, StabStitch++ is the only one supporting more than two inputs, but it is limited to \(N = 3\) and requires a fixed spatial
+ordering of the cameras.<p>
+  <h4>\(N = 2\)</h4>
+  <div class="gallery" data-gallery>
+    <button class="nav-btn prev" aria-label="Previous">&#x2039;</button>
+    <div class="gallery-viewport">
+      <div class="gallery-track">
+        <div class="gallery-slide"><video src="videos/10_n2_stabstitch++_vs_mvis.mp4" autoplay loop muted playsinline></video></div>
+        <div class="gallery-slide"><video src="videos/11_n2_stabstitch++_vs_mvis.mp4" autoplay loop muted playsinline></video></div>
+      </div>
+    </div>
+    <button class="nav-btn next" aria-label="Next">&#x203A;</button>
+    <div class="gallery-dots"></div>
+  </div>
+
+
+  <h3>Comparison with Multiple Image Stitching (MIS)</h3>
+  <p>
+    While the MIS methods can produce high quality panoramas at any single time \(t\), the stitched video as a whole suffers from noticeable temporal instability.
+  </p>
+  <div class="gallery big-gallery" data-gallery>
+    <button class="nav-btn prev" aria-label="Previous">&#x2039;</button>
+    <div class="gallery-viewport">
+      <div class="gallery-track">
+        <div class="gallery-slide">
+          <span class="slide-label">\(N = 4\)</span>
+          <video src="videos/6_n4_mis_methods_vs_mvis.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <div class="gallery-slide">
+          <span class="slide-label">\(N = 5\)</span>
+          <video src="videos/5_n5_mis_methods_vs_mvis.mp4" autoplay loop muted playsinline></video>
+        </div>
+        <div class="gallery-slide">
+          <span class="slide-label">\(N = 6\)</span>
+          <video src="videos/7_n6_mis_methods_vs_mvis.mp4" autoplay loop muted playsinline></video>
+        </div>
+      </div>
+    </div>
+    <button class="nav-btn next" aria-label="Next">&#x203A;</button>
+    <div class="gallery-dots"></div>
+  </div>
+
+ 
+  <h3>Visual Results On \(N>3\)</h3>
+  <p>MViS supports arbitrary numbers of cameras with dynamically changing view-intersection graphs.</p>
+  <div class="single-video-block">
+    <h4>\(N = 4\)</h4>
+    <video src="videos/1_n4_mvis_volcano.mp4" autoplay loop muted playsinline></video>
+  </div>
+
+  <div class="single-video-block">
+    <h4>\(N = 5\)</h4>
+    <video src="videos/9_n5_mvis.mp4" autoplay loop muted playsinline></video>
+  </div>
+
+  <!-- ============ MMCD Dataset ============ -->
+  <h2>The MMCD Dataset</h2>
+  <p>
+    Samples from the MMCD dataset of a 6 and 5 camera scenes. For every scene, we manually annotate keypoints in the overlapping regions of the first frame of each video and track their trajectories with Co-Tracker 3.
+  </p>
+
+  <div class="gallery" data-gallery>
+    <button class="nav-btn prev" aria-label="Previous">&#x2039;</button>
+    <div class="gallery-viewport">
+      <div class="gallery-track">
+        <div class="gallery-slide"><video src="videos/13_mmcd_sample.mp4" autoplay loop muted playsinline></video></div>
+        <div class="gallery-slide"><video src="videos/14_mmcd_sample.mp4" autoplay loop muted playsinline></video></div>
+      </div>
+    </div>
+    <button class="nav-btn next" aria-label="Next">&#x203A;</button>
+    <div class="gallery-dots"></div>
+  </div>
+
+</div>
+
+
+<script>
+  const TRANS = 'transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+
+  document.querySelectorAll('[data-gallery]').forEach(gallery => {
+    const track   = gallery.querySelector('.gallery-track');
+    const slides  = Array.from(gallery.querySelectorAll('.gallery-slide'));
+    const prevBtn = gallery.querySelector('.prev');
+    const nextBtn = gallery.querySelector('.next');
+    const dotsBox = gallery.querySelector('.gallery-dots');
+    const total   = slides.length;
+
+    if (total <= 1) {
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+      return;
+    }
+
+    // Clone first slide to the end and last slide to the start, so motion is
+    // always left-to-right. After animating onto a clone we instantly snap to
+    // its real counterpart (no animation), making the loop seamless.
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone  = slides[total - 1].cloneNode(true);
+    firstClone.setAttribute('aria-hidden', 'true');
+    lastClone.setAttribute('aria-hidden', 'true');
+    track.appendChild(firstClone);
+    track.insertBefore(lastClone, slides[0]);
+
+    // trackIndex spans [0 .. total + 1]: 0 = lastClone, 1..total = real slides,
+    // total + 1 = firstClone. realIndex always reflects which real slide is shown.
+    let trackIndex = 1;
+    let realIndex  = 0;
+    let busy       = false;
+
+    function setPos(animate) {
+      track.style.transition = animate ? TRANS : 'none';
+      track.style.transform  = `translateX(-${trackIndex * 100}%)`;
+      if (!animate) void track.offsetWidth; // force reflow so next change can animate
+    }
+
+    function updateDots() {
+      dotsBox.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === realIndex);
+      });
+    }
+
+    function next() {
+      if (busy) return;
+      busy = true;
+      trackIndex++;
+      realIndex = (realIndex + 1) % total;
+      setPos(true);
+      updateDots();
+      track.addEventListener('transitionend', function done() {
+        track.removeEventListener('transitionend', done);
+        if (trackIndex === total + 1) {
+          trackIndex = 1;       // we landed on firstClone -> snap to slide 0
+          setPos(false);
+        }
+        busy = false;
+      }, { once: true });
+    }
+
+    function prev() {
+      if (busy) return;
+      busy = true;
+      trackIndex--;
+      realIndex = (realIndex - 1 + total) % total;
+      setPos(true);
+      updateDots();
+      track.addEventListener('transitionend', function done() {
+        track.removeEventListener('transitionend', done);
+        if (trackIndex === 0) {
+          trackIndex = total;   // we landed on lastClone -> snap to last real slide
+          setPos(false);
+        }
+        busy = false;
+      }, { once: true });
+    }
+
+    function jumpTo(k) {
+      if (busy) return;
+      busy = true;
+      realIndex = k;
+      trackIndex = k + 1;
+      setPos(true);
+      updateDots();
+      track.addEventListener('transitionend', function done() {
+        track.removeEventListener('transitionend', done);
+        busy = false;
+      }, { once: true });
+    }
+
+    // Build dots
+    for (let k = 0; k < total; k++) {
+      const dot = document.createElement('span');
+      dot.className = 'dot' + (k === 0 ? ' active' : '');
+      dot.addEventListener('click', () => jumpTo(k));
+      dotsBox.appendChild(dot);
+    }
+
+    // Initial position (no animation)
+    setPos(false);
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+
+    // Keyboard arrows when the gallery is focused
+    gallery.tabIndex = 0;
+    gallery.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft')  prev();
+      if (e.key === 'ArrowRight') next();
+    });
+  });
+</script>
+
+</body>
+</html>
